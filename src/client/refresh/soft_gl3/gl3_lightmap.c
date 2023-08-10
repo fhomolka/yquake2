@@ -53,8 +53,9 @@ GL3_LM_UploadBlock(void)
 	for(map=0; map < MAX_LIGHTMAPS_PER_SURFACE; ++map)
 	{
 		GL3_SelectTMU(GL_TEXTURE1+map); // this relies on GL_TEXTURE2 being GL_TEXTURE1+1 etc
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		//NOTE(Fix): Lightmaps are smooth in software, don't crunch them
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		gl3_lms.internal_format = GL_LIGHTMAP_FORMAT;
 		glTexImage2D(GL_TEXTURE_2D, 0, gl3_lms.internal_format,
