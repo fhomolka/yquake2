@@ -1277,11 +1277,7 @@ static qboolean createShaders(void)
 		return false;
 	}
 
-	const char* particleFrag = fragmentSrcParticles;
-	if(gl3_particle_square->value != 0.0f)
-	{
-		particleFrag = fragmentSrcParticlesSquare;
-	}
+	const char* particleFrag = fragmentSrcParticlesSquare;
 
 	if(!initShader3D(&gl3state.siParticle, vertexSrcParticles, particleFrag))
 	{
