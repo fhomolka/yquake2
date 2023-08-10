@@ -1725,9 +1725,8 @@ GL3_SetLightLevel(entity_t *currententity)
 {
 	vec3_t shadelight = {0};
 
-	if (gl3_newrefdef.rdflags & RDF_NOWORLDMODEL || (!currententity))
+	if (gl3_newrefdef.rdflags & RDF_NOWORLDMODEL)
 	{
-		r_lightlevel->value = 150.0;
 		return;
 	}
 
