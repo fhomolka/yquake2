@@ -639,7 +639,8 @@ static const char* fragmentSrc3DlmNoColor = MULTILINE_STRING(
 			vec4 texel = texture(tex, passTexCoord);
 
 			// apply intensity
-			texel.rgb *= intensity;
+			//HACK(Fix): multiplying 1.8 seems to get a more software-like light
+			texel.rgb *= intensity * 1.8;
 
 			// apply lightmap
 			vec4 lmTex = texture(lightmap0, passLMcoord) * lmScales[0];
