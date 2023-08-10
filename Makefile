@@ -377,12 +377,12 @@ endif
 # ----------
 
 # Phony targets
-.PHONY : all client game icon server ref_gl1 ref_gl3 ref_gles3 ref_soft
+.PHONY : all client game icon server ref_gl1 ref_gl3 ref_gles3 ref_soft ref_soft_gl3
 
 # ----------
 
 # Builds everything
-all: config client server game ref_gl1 ref_gl3 ref_gles3 ref_soft
+all: config client server game ref_gl1 ref_gl3 ref_gles3 ref_soft ref_soft_gl3
 
 # ----------
 
@@ -729,6 +729,26 @@ build/ref_soft/%.o: %.c
 	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(INCLUDE) -o $@ $<
 
 # ----------
+ifeq ($(YQ2_OSTYPE), Windows)
+else ifeq ($(YQ2_OSTYPE), Darwin)
+else
+
+ref_soft_gl3:
+	@echo "===> Building ref_soft_gl3.so"
+	$(MAKE) release/ref_soft_gl3.so
+
+release/ref_soft_gl3.so : GLAD_INCLUDE = -Isrc/client/refresh/gl3/glad/include
+release/ref_soft_gl3.so : CFLAGS += -fPIC
+release/ref_soft_gl3.so : LDFLAGS += -shared
+
+endif # OS specific ref_gl3 stuff
+
+build/ref_soft_gl3/%.o: %.c
+	@echo "===> CC $<"
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(INCLUDE) $(GLAD_INCLUDE) -o $@ $<
+
+# ----------
 
 # The baseq2 game
 ifeq ($(YQ2_OSTYPE), Windows)
@@ -1021,6 +1041,39 @@ endif
 
 # ----------
 
+REFSOFT_GL3_OBJS_ := \
+	src/client/refresh/soft_gl3/gl3_draw.o \
+	src/client/refresh/soft_gl3/gl3_image.o \
+	src/client/refresh/soft_gl3/gl3_light.o \
+	src/client/refresh/soft_gl3/gl3_lightmap.o \
+	src/client/refresh/soft_gl3/gl3_main.o \
+	src/client/refresh/soft_gl3/gl3_mesh.o \
+	src/client/refresh/soft_gl3/gl3_misc.o \
+	src/client/refresh/soft_gl3/gl3_model.o \
+	src/client/refresh/soft_gl3/gl3_sdl.o \
+	src/client/refresh/soft_gl3/gl3_surf.o \
+	src/client/refresh/soft_gl3/gl3_warp.o \
+	src/client/refresh/soft_gl3/gl3_shaders.o \
+	src/client/refresh/files/surf.o \
+	src/client/refresh/files/models.o \
+	src/client/refresh/files/pcx.o \
+	src/client/refresh/files/stb.o \
+	src/client/refresh/files/wal.o \
+	src/client/refresh/files/pvs.o \
+	src/common/shared/shared.o \
+	src/common/md4.o
+
+ifeq ($(YQ2_OSTYPE), Windows)
+REFSOFT_GL3_OBJS_ += \
+	src/backends/windows/shared/hunk.o
+else # not Windows
+REFSOFT_GL3_OBJS_ += \
+	src/backends/unix/shared/hunk.o
+endif
+
+
+# ----------
+
 # Used by the server
 SERVER_OBJS_ := \
 	src/backends/generic/misc.o \
@@ -1080,6 +1133,8 @@ REFGL3_OBJS += $(patsubst %,build/ref_gl3/%,$(REFGL3_OBJS_GLADE_))
 REFGLES3_OBJS = $(patsubst %,build/ref_gles3/%,$(REFGL3_OBJS_))
 REFGLES3_OBJS += $(patsubst %,build/ref_gles3/%,$(REFGL3_OBJS_GLADEES_))
 REFSOFT_OBJS = $(patsubst %,build/ref_soft/%,$(REFSOFT_OBJS_))
+REFSOFT_GL3_OBJS = $(patsubst %,build/ref_soft_gl3/%,$(REFSOFT_GL3_OBJS_))
+REFSOFT_GL3_OBJS += $(patsubst %,build/ref_soft_gl3/%,$(REFGL3_OBJS_GLADE_))
 SERVER_OBJS = $(patsubst %,build/server/%,$(SERVER_OBJS_))
 GAME_OBJS = $(patsubst %,build/baseq2/%,$(GAME_OBJS_))
 
@@ -1092,6 +1147,7 @@ REFGL1_DEPS= $(REFGL1_OBJS:.o=.d)
 REFGL3_DEPS= $(REFGL3_OBJS:.o=.d)
 REFGLES3_DEPS= $(REFGLES3_OBJS:.o=.d)
 REFSOFT_DEPS= $(REFSOFT_OBJS:.o=.d)
+REFSOFT_GL3_DEPS= $(REFSOFT_GL3_OBJS:.o=.d)
 SERVER_DEPS= $(SERVER_OBJS:.o=.d)
 
 # Suck header dependencies in.
@@ -1100,6 +1156,7 @@ SERVER_DEPS= $(SERVER_OBJS:.o=.d)
 -include $(REFGL1_DEPS)
 -include $(REFGL3_DEPS)
 -include $(REFGLES3_DEPS)
+-include $(REFSOFT_GL3_DEPS)
 -include $(SERVER_DEPS)
 
 # ----------
@@ -1193,6 +1250,22 @@ else
 release/ref_soft.so : $(REFSOFT_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(REFSOFT_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+endif
+
+# release/ref_gl3.so
+ifeq ($(YQ2_OSTYPE), Windows)
+release/ref_soft_gl3.dll : $(REFSOFT_GL3_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFSOFT_GL3_OBJS) $(LDLIBS) $(DLL_SDLLDFLAGS) -o $@
+	$(Q)strip $@
+else ifeq ($(YQ2_OSTYPE), Darwin)
+release/ref_soft_gl3.dylib : $(REFSOFT_GL3_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFSOFT_GL3_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
+else
+release/ref_soft_gl3.so : $(REFSOFT_GL3_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(REFSOFT_GL3_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
 endif
 
 # release/baseq2/game.so
