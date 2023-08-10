@@ -217,7 +217,7 @@ GL3_Register(void)
 	r_customheight = ri.Cvar_Get("r_customheight", "768", CVAR_ARCHIVE);
 	gl3_particle_size = ri.Cvar_Get("gl3_particle_size", "40", CVAR_ARCHIVE);
 	gl3_particle_fade_factor = ri.Cvar_Get("gl3_particle_fade_factor", "1.2", CVAR_ARCHIVE);
-	gl3_particle_square = ri.Cvar_Get("gl3_particle_square", "0", CVAR_ARCHIVE);
+	gl3_particle_square = ri.Cvar_Get("gl3_particle_square", "1", CVAR_ARCHIVE);
 	// if set to 0, lights (from lightmaps, dynamic lights and on models) are white instead of colored
 	gl3_colorlight = ri.Cvar_Get("gl3_colorlight", "1", CVAR_ARCHIVE);
 	gl_polyblend = ri.Cvar_Get("gl_polyblend", "1", CVAR_ARCHIVE);
@@ -245,7 +245,7 @@ GL3_Register(void)
 	r_videos_unfiltered = ri.Cvar_Get("r_videos_unfiltered", "0", CVAR_ARCHIVE);
 	gl_nobind = ri.Cvar_Get("gl_nobind", "0", 0);
 
-	gl_texturemode = ri.Cvar_Get("gl_texturemode", "GL_LINEAR_MIPMAP_NEAREST", CVAR_ARCHIVE);
+	gl_texturemode = ri.Cvar_Get("gl_texturemode", "GL_NEAREST", CVAR_ARCHIVE);
 	gl_anisotropic = ri.Cvar_Get("r_anisotropic", "0", CVAR_ARCHIVE);
 
 	vid_fullscreen = ri.Cvar_Get("vid_fullscreen", "0", CVAR_ARCHIVE);
