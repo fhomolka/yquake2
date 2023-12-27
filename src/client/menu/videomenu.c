@@ -125,6 +125,13 @@ Renderer_FillRenderdef(void)
 		rendererlist[numrenderer].cvarstr = "soft";
 	}
 
+	if (VID_HasRenderer("soft_gl3"))
+	{
+		numrenderer++;
+		rendererlist[numrenderer].boxstr = "[OpenGL 3.2 (Software Emu)]";
+		rendererlist[numrenderer].cvarstr = "soft_gl3";
+	}
+
 	// The custom renderer. Must be known to the menu,
 	// but nothing more. The display string is hard
 	// coded below, the cvar is unknown.
