@@ -124,12 +124,8 @@ typedef unsigned char byte;
 #define YAW 1                       /* left / right */
 #define ROLL 2                      /* fall over */
 
-#ifndef min
-#define min(a, b) (((a) < (b)) ? (a) : (b))
-#endif
-#ifndef max
-#define max(a, b) (((a) > (b)) ? (a) : (b))
-#endif
+#define Q_min(a, b) (((a) < (b)) ? (a) : (b))
+#define Q_max(a, b) (((a) > (b)) ? (a) : (b))
 
 #define MAX_STRING_CHARS 2048       /* max length of a string passed to Cmd_TokenizeString */
 #define MAX_STRING_TOKENS 80        /* max tokens resulting from Cmd_TokenizeString */
@@ -406,8 +402,8 @@ char *Sys_FindNext(unsigned musthave, unsigned canthave);
 void Sys_FindClose(void);
 
 /* this is only here so the functions in shared source files can link */
-YQ2_ATTR_NORETURN void Sys_Error(char *error, ...);
-void Com_Printf(char *msg, ...);
+YQ2_ATTR_NORETURN void Sys_Error(const char *error, ...);
+void Com_Printf(const char *msg, ...);
 
 /*
  * ==========================================================

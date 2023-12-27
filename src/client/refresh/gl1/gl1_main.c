@@ -1616,13 +1616,13 @@ RI_BeginFrame(float camera_separation)
 	// Clamp overbrightbits
 	if (gl1_overbrightbits->modified)
 	{
-		if (gl1_overbrightbits->value > 2 && gl1_overbrightbits->value < 4)
+		if (gl1_overbrightbits->value < 0)
 		{
-			ri.Cvar_Set("r_overbrightbits", "2");
+			ri.Cvar_Set("gl1_overbrightbits", "0");
 		}
 		else if (gl1_overbrightbits->value > 4)
 		{
-			ri.Cvar_Set("r_overbrightbits", "4");
+			ri.Cvar_Set("gl1_overbrightbits", "4");
 		}
 
 		gl1_overbrightbits->modified = false;
@@ -1961,7 +1961,7 @@ void R_Printf(int level, const char* msg, ...)
  * (shared.c, rand.c, flash.c, mem.c/hunk.c) can link
  */
 void
-Sys_Error(char *error, ...)
+Sys_Error(const char *error, ...)
 {
 	va_list argptr;
 	char text[4096]; // MAXPRINTMSG == 4096
@@ -1974,7 +1974,7 @@ Sys_Error(char *error, ...)
 }
 
 void
-Com_Printf(char *msg, ...)
+Com_Printf(const char *msg, ...)
 {
 	va_list argptr;
 	va_start(argptr, msg);

@@ -903,8 +903,10 @@ CLIENT_OBJS_ := \
 	src/common/shared/rand.o \
 	src/common/shared/shared.o \
 	src/common/unzip/ioapi.o \
-	src/common/unzip/miniz.o \
 	src/common/unzip/unzip.o \
+	src/common/unzip/miniz/miniz.o \
+	src/common/unzip/miniz/miniz_tdef.o \
+	src/common/unzip/miniz/miniz_tinfl.o \
 	src/server/sv_cmd.o \
 	src/server/sv_conless.o \
 	src/server/sv_entities.o \
@@ -1095,8 +1097,10 @@ SERVER_OBJS_ := \
 	src/common/shared/rand.o \
 	src/common/shared/shared.o \
 	src/common/unzip/ioapi.o \
-	src/common/unzip/miniz.o \
 	src/common/unzip/unzip.o \
+	src/common/unzip/miniz/miniz.o \
+	src/common/unzip/miniz/miniz_tdef.o \
+	src/common/unzip/miniz/miniz_tinfl.o \
 	src/server/sv_cmd.o \
 	src/server/sv_conless.o \
 	src/server/sv_entities.o \
@@ -1125,7 +1129,7 @@ endif
 
 # ----------
 
-# Rewrite pathes to our object directory.
+# Rewrite paths to our object directory.
 CLIENT_OBJS = $(patsubst %,build/client/%,$(CLIENT_OBJS_))
 REFGL1_OBJS = $(patsubst %,build/ref_gl1/%,$(REFGL1_OBJS_))
 REFGL3_OBJS = $(patsubst %,build/ref_gl3/%,$(REFGL3_OBJS_))

@@ -134,7 +134,7 @@ qboolean GL3_IsVsyncActive(void)
 }
 
 /*
- * Enables or disabes the vsync.
+ * Enables or disables the vsync.
  */
 void GL3_SetVsync(void)
 {
@@ -343,7 +343,7 @@ int GL3_InitContext(void* win)
 	// Enable vsync if requested.
 	GL3_SetVsync();
 
-	// Load GL pointrs through GLAD and check context.
+	// Load GL pointers through GLAD and check context.
 #ifdef YQ2_GL3_GLES
 	if( !gladLoadGLES2Loader(SDL_GL_GetProcAddress))
 #else // Desktop GL

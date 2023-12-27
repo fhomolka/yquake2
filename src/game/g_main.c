@@ -88,6 +88,7 @@ cvar_t *gib_on;
 
 cvar_t *aimfix;
 cvar_t *g_machinegun_norecoil;
+cvar_t *g_quick_weap;
 cvar_t *g_swap_speed;
 
 void G_RunFrame(void);
@@ -182,7 +183,7 @@ GetGameAPI(game_import_t *import)
  * in shared source files can link
  */
 void
-Sys_Error(char *error, ...)
+Sys_Error(const char *error, ...)
 {
 	va_list argptr;
 	char text[1024];
@@ -195,7 +196,7 @@ Sys_Error(char *error, ...)
 }
 
 void
-Com_Printf(char *msg, ...)
+Com_Printf(const char *msg, ...)
 {
 	va_list argptr;
 	char text[1024];

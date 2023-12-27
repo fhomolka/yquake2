@@ -35,7 +35,7 @@ if (MSVC)
 
 	# ignore some compiler warnings
 	add_compile_options(/wd4244 /wd4305) # possible loss of data/truncation (double to float etc; ignore)
-	add_compile_options(/wd4018) # signed/unsigned missmatch
+	add_compile_options(/wd4018) # signed/unsigned mismatch
 	add_compile_options(/wd4996) # 'function': was declared deprecated (like all that secure CRT stuff)
 	# don't show me warnings for system headers, why the fuck isn't this default
 	add_compile_options(/experimental:external /external:W0)
@@ -133,10 +133,10 @@ if(cpu STREQUAL "powerpc")
 elseif(cpu STREQUAL "aarch64")
 	# "arm64" is more obvious, and some operating systems (like macOS) use it instead of "aarch64"
 	set(cpu "arm64")
+elseif(cpu MATCHES "[aA][mM][dD]64" OR cpu MATCHES "[xX].*64")
+	set(cpu "x86_64")
 elseif(cpu MATCHES "i.86" OR cpu MATCHES "[xX]86")
 	set(cpu "i386")
-elseif(cpu MATCHES "[aA][mM][dD]64" OR cpu MATCHES "[xX]64")
-	set(cpu "x86_64")
 elseif(cpu MATCHES "[aA][rR][mM].*") # some kind of arm..
 	# On 32bit Raspbian gcc -dumpmachine returns sth starting with "arm-",
 	# while clang -dumpmachine says "arm6k-..." - try to unify that to "arm"
@@ -461,8 +461,10 @@ set(Client-Source
 	${COMMON_SRC_DIR}/shared/rand.c
 	${COMMON_SRC_DIR}/shared/shared.c
 	${COMMON_SRC_DIR}/unzip/ioapi.c
-	${COMMON_SRC_DIR}/unzip/miniz.c
 	${COMMON_SRC_DIR}/unzip/unzip.c
+	${COMMON_SRC_DIR}/unzip/miniz/miniz.c
+	${COMMON_SRC_DIR}/unzip/miniz/miniz_tdef.c
+	${COMMON_SRC_DIR}/unzip/miniz/miniz_tinfl.c
 	${SERVER_SRC_DIR}/sv_cmd.c
 	${SERVER_SRC_DIR}/sv_conless.c
 	${SERVER_SRC_DIR}/sv_entities.c
@@ -499,9 +501,11 @@ set(Client-Header
 	${COMMON_SRC_DIR}/header/shared.h
 	${COMMON_SRC_DIR}/header/zone.h
 	${COMMON_SRC_DIR}/unzip/ioapi.h
-	${COMMON_SRC_DIR}/unzip/miniz.h
-	${COMMON_SRC_DIR}/unzip/minizconf.h
 	${COMMON_SRC_DIR}/unzip/unzip.h
+	${COMMON_SRC_DIR}/unzip/miniz/miniz.h
+	${COMMON_SRC_DIR}/unzip/miniz/miniz_tdef.h
+	${COMMON_SRC_DIR}/unzip/miniz/miniz_tinfl.h
+	${COMMON_SRC_DIR}/unzip/miniz/minizconf.h
 	${SERVER_SRC_DIR}/header/server.h
 	)
 
@@ -524,8 +528,10 @@ set(Server-Source
 	${COMMON_SRC_DIR}/shared/rand.c
 	${COMMON_SRC_DIR}/shared/shared.c
 	${COMMON_SRC_DIR}/unzip/ioapi.c
-	${COMMON_SRC_DIR}/unzip/miniz.c
 	${COMMON_SRC_DIR}/unzip/unzip.c
+	${COMMON_SRC_DIR}/unzip/miniz/miniz.c
+	${COMMON_SRC_DIR}/unzip/miniz/miniz_tdef.c
+	${COMMON_SRC_DIR}/unzip/miniz/miniz_tinfl.c
 	${SERVER_SRC_DIR}/sv_cmd.c
 	${SERVER_SRC_DIR}/sv_conless.c
 	${SERVER_SRC_DIR}/sv_entities.c
@@ -546,9 +552,11 @@ set(Server-Header
 	${COMMON_SRC_DIR}/header/shared.h
 	${COMMON_SRC_DIR}/header/zone.h
 	${COMMON_SRC_DIR}/unzip/ioapi.h
-	${COMMON_SRC_DIR}/unzip/miniz.h
-	${COMMON_SRC_DIR}/unzip/minizconf.h
 	${COMMON_SRC_DIR}/unzip/unzip.h
+	${COMMON_SRC_DIR}/unzip/miniz/miniz.h
+	${COMMON_SRC_DIR}/unzip/miniz/miniz_tdef.h
+	${COMMON_SRC_DIR}/unzip/miniz/miniz_tinfl.h
+	${COMMON_SRC_DIR}/unzip/miniz/minizconf.h
 	${SERVER_SRC_DIR}/header/server.h
 	)
 

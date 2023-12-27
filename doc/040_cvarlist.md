@@ -212,7 +212,7 @@ Set `0` by default.
 
 * **g_fix_triggered**: This cvar, when set to `1`, forces monsters to
   spawn in normally if they are set to a triggered spawn but do not
-  have a targetname. There are a few cases of this in GroundZero and
+  have a targetname. There are a few cases of this in Ground Zero and
   The Reckoning. This cvar is disabled by default to maintain the
   original gameplay experience.
 
@@ -221,6 +221,12 @@ Set `0` by default.
   recoil in single player. When set to `1` the recoil is disabled in
   single player, the same way as in multiplayer.
   This cvar only works if the game.dll implements this behaviour.
+
+* **g_quick_weap**: If set to `1`, both *weapprev* and *weapnext*
+  commands will "count" how many times they have been called, making
+  possible to skip weapons by quickly tapping one of these keys.
+  By default this cvar is set to `0`, and will only work if the
+  game.dll implements this behaviour.
 
 * **g_swap_speed**: Sets the speed of the "changing weapon" animation.
   Default is `1`. If set to `2`, it will be double the speed, `3` is
@@ -287,6 +293,7 @@ Set `0` by default.
 
 * **cl_audiopaused**: If set to `1` the sounds pause when the game does.
 
+
 ## Graphics (all renderers)
 
 * **cin_force43**: If set to `1` (the default) cinematics are displayed
@@ -328,10 +335,10 @@ Set `0` by default.
   custom maps and is problematic with other custom maps.
 
 * **r_fixsurfsky**: Some maps misuse sky surfaces for interior
-  lightning. The original renderer had a bug that made such surfaces
-  mess up the lightning of entities near them. If set to `0` (the
+  lighting. The original renderer had a bug that made such surfaces
+  mess up the lighting of entities near them. If set to `0` (the
   default) the bug is there and maps look like their developers
-  intended. If set to `1` the bug is fixed and the lightning correct.
+  intended. If set to `1` the bug is fixed and the lighting correct.
 
 * **r_vsync**: Enables the vsync: frames are synchronized with
   display refresh rate, should (but doesn't always) prevent tearing.
@@ -409,6 +416,10 @@ Set `0` by default.
   show. Defaults to `300`.  
   Related to this: *cl_maxfps* and *cl_async*.
 
+* **vid_pauseonfocuslost**: When set to `1` the game is paused as soon
+  as it's window looses focus. It will work only in situation were the
+  game can be paused, e.g. not in multiplayer games. Defaults to `0`.
+
 * **vid_renderer**: Selects the renderer library. Possible options are
   `gl1` (the default) for the old OpenGL 1.4 renderer, `gl3` for the
   OpenGL 3.2 renderer, `gles3` for the OpenGL ES3 renderer
@@ -432,6 +443,7 @@ Set `0` by default.
   Other supported values: `GL_NEAREST_MIPMAP_NEAREST`,
   `GL_NEAREST_MIPMAP_LINEAR`, `GL_LINEAR_MIPMAP_LINEAR`
 
+
 ## Graphics (OpenGL 1.4 only)
 
 * **gl1_intensity**: Sets the color intensity. Must be a floating point
@@ -441,8 +453,9 @@ Set `0` by default.
 * **gl1_overbrightbits**: Enables overbright bits, brightness scaling of
   lightmaps and models. Higher values make shadows less dark. Possible
   values are `0` (no overbright bits), `1` (more correct lighting for
-  water), `2` (scale by factor 2) and `3` (scale by factor 3). Applied
-  in realtime, does not need `vid_restart`.
+  water), `2` (scale by factor 2), `3` (scale lighting by 3 only for the
+  dynamic meshes, like enemies and items), and `4` (scale lighting of
+  everything by 4). Applied in realtime, does not need `vid_restart`.
 
 * **gl1_particle_square**: If set to `1` particles are rendered as
   squares.
@@ -584,6 +597,7 @@ Set `0` by default.
   this cvar is `0`. Possible values:
   `0`: Rumble feedback,
   `1`: Haptic feedback.
+
 
 ## cvar operations
 

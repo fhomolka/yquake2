@@ -121,16 +121,9 @@ M_ForceMenuOff(void)
     Cvar_Set("paused", "0");
 }
 
-void
+    void
 M_PopMenu(void)
 {
-    /* play music */
-    if (Cvar_VariableValue("ogg_pausewithgame") == 1 &&
-        OGG_Status() == PAUSE && cl.attractloop == false)
-    {
-        Cbuf_AddText("ogg toggle\n");
-    }
-
     S_StartLocalSound(menu_out_sound);
 
     if (m_menudepth < 1)
@@ -146,6 +139,12 @@ M_PopMenu(void)
     if (!m_menudepth)
     {
         M_ForceMenuOff();
+        /* play music */
+        if (Cvar_VariableValue("ogg_pausewithgame") == 1 &&
+                OGG_Status() == PAUSE && cl.attractloop == false)
+        {
+            Cbuf_AddText("ogg toggle\n");
+        }
     }
 }
 
@@ -243,27 +242,31 @@ Key_GetMenuKey(int key)
 	switch (key)
 	{
 		case K_KP_UPARROW:
+		    if (IN_NumpadIsOn() == true) { break; }
 		case K_UPARROW:
 		case K_DPAD_UP:
-			return K_UPARROW;
+		    return K_UPARROW;
 
 		case K_TAB:
 		case K_KP_DOWNARROW:
+		    if (IN_NumpadIsOn() == true) { break; }
 		case K_DOWNARROW:
 		case K_DPAD_DOWN:
-			return K_DOWNARROW;
+		    return K_DOWNARROW;
 
 		case K_KP_LEFTARROW:
+                    if (IN_NumpadIsOn() == true) { break; }
 		case K_LEFTARROW:
 		case K_DPAD_LEFT:
 		case K_SHOULDER_LEFT:
-			return K_LEFTARROW;
+		    return K_LEFTARROW;
 
 		case K_KP_RIGHTARROW:
+		    if (IN_NumpadIsOn() == true) { break; }
 		case K_RIGHTARROW:
 		case K_DPAD_RIGHT:
 		case K_SHOULDER_RIGHT:
-			return K_RIGHTARROW;
+		    return K_RIGHTARROW;
 
 		case K_MOUSE1:
 		case K_MOUSE2:
@@ -274,22 +277,28 @@ Key_GetMenuKey(int key)
 		case K_KP_ENTER:
 		case K_ENTER:
 		case K_BTN_A:
-			return K_ENTER;
+		    return K_ENTER;
 
 		case K_ESCAPE:
 		case K_JOY_BACK:
 		case K_BTN_B:
-			return K_ESCAPE;
+		    return K_ESCAPE;
 
 		case K_BACKSPACE:
 		case K_DEL:
 		case K_KP_DEL:
+		    if (IN_NumpadIsOn() == true) { break; }
 		case K_BTN_Y:
-			return K_BACKSPACE;
+		    return K_BACKSPACE;
+		case K_KP_INS:
+		    if (IN_NumpadIsOn() == true) { break; }
+		case K_INS:
+		    return K_INS;
 	}
 
 	return key;
 }
+
 const char *
 Default_MenuKey(menuframework_s *m, int key)
 {
@@ -2154,11 +2163,18 @@ static menuslider_s s_options_oggvolume_slider;
 static menulist_s s_options_oggenable_box;
 static menulist_s s_options_quality_list;
 static menulist_s s_options_console_action;
+static menulist_s s_options_pauseonfocus_box;
 
 static void
 CrosshairFunc(void *unused)
 {
     Cvar_SetValue("crosshair", (float)s_options_crosshair_box.curvalue);
+}
+
+static void
+PauseFocusFunc()
+{
+    Cvar_SetValue("vid_pauseonfocuslost", (float)s_options_pauseonfocus_box.curvalue);
 }
 
 static void
@@ -2196,6 +2212,7 @@ ControlsSetMenuItemValues(void)
     s_options_lookstrafe_box.curvalue = (lookstrafe->value != 0);
     s_options_freelook_box.curvalue = (freelook->value != 0);
     s_options_crosshair_box.curvalue = ClampCvar(0, 3, crosshair->value);
+    s_options_pauseonfocus_box.curvalue = ClampCvar(0, 2, Cvar_VariableValue("vid_pauseonfocuslost"));
 }
 
 static void
@@ -2335,6 +2352,14 @@ Options_MenuInit(void)
         0
     };
 
+    static const char* pause_names[] =
+    {
+        "yes",
+        "no",
+        "unpause on re-focus",
+        0
+    };
+
     static const char *crosshair_names[] =
     {
         "none",
@@ -2432,6 +2457,13 @@ Options_MenuInit(void)
     s_options_crosshair_box.generic.name = "crosshair";
     s_options_crosshair_box.generic.callback = CrosshairFunc;
     s_options_crosshair_box.itemnames = crosshair_names;
+	
+    s_options_pauseonfocus_box.generic.type = MTYPE_SPINCONTROL;
+    s_options_pauseonfocus_box.generic.x = 0;
+    s_options_pauseonfocus_box.generic.y = (y += 10);
+    s_options_pauseonfocus_box.generic.name = "pause on minimized";
+    s_options_pauseonfocus_box.generic.callback = PauseFocusFunc;
+    s_options_pauseonfocus_box.itemnames = pause_names;
 
     y += 10;
     if (show_gamepad)
@@ -2475,6 +2507,7 @@ Options_MenuInit(void)
     Menu_AddItem(&s_options_menu, (void *)&s_options_lookstrafe_box);
     Menu_AddItem(&s_options_menu, (void *)&s_options_freelook_box);
     Menu_AddItem(&s_options_menu, (void *)&s_options_crosshair_box);
+    Menu_AddItem(&s_options_menu, (void*)&s_options_pauseonfocus_box);
 
     if (show_gamepad)
     {
@@ -2569,7 +2602,7 @@ static const char *idcredits[] = {
 	"+ADDITIONAL SUPPORT",
 	"",
 	"+LINUX PORT AND CTF",
-	"Dave \"Zoid\" Kirsch",
+	"Zoid Kirsch",
 	"",
 	"+CINEMATIC SEQUENCES",
 	"Ending Cinematic by Blur Studio - ",
@@ -2717,7 +2750,7 @@ static const char *xatcredits[] =
     "Brandon James",
     "Todd Hollenshead",
     "Barrett (Bear) Alexander",
-    "Dave \"Zoid\" Kirsch",
+    "Zoid Kirsch",
     "Donna Jackson",
     "",
     "",
@@ -2843,7 +2876,7 @@ static const char *roguecredits[] =
     "Barrett (Bear) Alexander",
     "Katherine Anna Kang",
     "Donna Jackson",
-    "Dave \"Zoid\" Kirsch",
+    "Zoid Kirsch",
     "",
     "",
     "",
@@ -2859,7 +2892,7 @@ static const char *roguecredits[] =
     "+AND THE GAME TESTERS",
     "",
     "The Ranger Clan",
-    "Dave \"Zoid\" Kirsch",
+    "Zoid Kirsch",
     "Nihilistic Software",
     "Robert Duffy",
     "",
